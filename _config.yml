@@ -1,3 +1,11 @@
 title: My GitHub Pages Site
 description: A quick GitHub Pages setup
 theme: minima
+
+navigation:
+  - title: Home
+    url: /
+  - title: Blog
+    url: /blog/
+  - title: About
+    url: /about/
