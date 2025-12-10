@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Hugo Tutorial Part II | Frank YD Site</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.147.8">
+<meta name="description" content="my blog">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://frankyudang.github.io/css/index.css">
+<link rel="canonical" href="https://frankyudang.github.io/posts/2025/05/hugo-tutorial-part-ii/">
+<link rel="alternate" type="application/rss+xml" href="" title="Frank YD Site">
+
+<header>
+  
+    <a href="https://frankyudang.github.io/" class="title">Frank YD Site</a>
+  
+  
+    <nav>
+    
+      <a href="/about/">About</a>
+    
+    </nav>
+  
+</header>
+
+<article>
+  <header>
+    <h1>Hugo Tutorial Part II</h1>
+    <time datetime="2025-05-10T21:31:28&#43;08:00">May 10, 2025</time>
+  </header>
+  <p>Thanks for looking into this post! After this <a href="/posts/post2">post</a>,  <a href="/posts/2025/05/hugo-tutorial-part-i/">post</a> I continue to add more features to my websites. I check out this <a href="https://www.youtube.com/watch?v=ZFL09qhKi5I">video</a>  by Luke Smith. Below I will show you some key points I learned.</p>
+<h2 id="1-how-to-add-reference-in-the-post">1 How to add reference in the post?</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>post<span style="color:#f92672">](</span>/posts/post2<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>post<span style="color:#f92672">](</span>**&lt; relref <span style="color:#e6db74">&#34;post2.md&#34;</span> &gt;**<span style="color:#f92672">)</span> <span style="color:#75715e"># replace ** with {{ }}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>video<span style="color:#f92672">](</span>https://www.youtube.com/watch?v<span style="color:#f92672">=</span>ZFL09qhKi5I<span style="color:#f92672">)</span>
+</span></span></code></pre></div><h2 id="2-how-to-insert-image">2 How to insert image</h2>
+<p>The image should added to the folder location <code>/your-web-site-name/static/</code> . Notice there should <code>style.css</code> in the folder too. Below command should be used to add the <code>style.css</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cp themes/lugo/static/style.css static/ 
+</span></span></code></pre></div><p>But in my case of <code>contrast-hugo</code>, I don&rsquo;t have the file. Instead, I copy the <code>index.css</code> and <code>minimal.css</code> file into the folder. I put the figure <code>pic.png</code> into the folder. The reference command for images goes like below</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>!<span style="color:#f92672">[</span>my image<span style="color:#f92672">](</span>/pic.png<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>**&lt; img link<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://frankyudang.github.io&#34;</span> caption<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;This is a caption.&#34;</span> src<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/pic.png&#34;</span>  mouse<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;This is what appears if your mouse over the image&#34;</span> &gt;**  <span style="color:#75715e">## replace ** with {{ }}</span>
+</span></span></code></pre></div><p>And  the effect are like below</p>
+<p>insert an image in a markdown syntax way</p>
+<p>&rsquo;''</p>
+<pre tabindex="0"><code>![my image](/image/pic.png)
+</code></pre><p>Below is the image insertion in a html way using the <code>shortcodes</code> method.</p>
+<pre tabindex="0"><code>
+**&lt; img link=&#34;https://frankyudang.github.io&#34; caption=&#34;This is a caption.&#34; src=&#34;/image/pic.png&#34;  mouse=&#34;This is what appears if your mouse over the image&#34; &gt;**
+</code></pre><h2 id="3-understand-the-folder-structure">3. understand the folder structure?</h2>
+<p>y ou can edit <code>frankyudang/archetypes/default.md</code>, and this file is assoicated with the new post. We can edit <code>draft=false</code></p>
+<p>In the <code>frankyudang/content/posts</code>, you can add new posts using the comand</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hugo new posts/POST_NAME.md 
+</span></span></code></pre></div><p>Actually, <code>frankyudang/</code> folder is created by the command</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hugo new site frankyudang
+</span></span></code></pre></div><p>After that, the desired theme is <code>git clone</code> into the the folder using the below command</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd frankyudang
+</span></span><span style="display:flex;"><span>git clone https://github.com/lukesmithxyz/lugo themes/lugo
+</span></span></code></pre></div><p>The above commend will add the downloaded theme into the <code>/frankyudang/themes/</code> folder. Inside this folder,</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>|- archetypes
+</span></span><span style="display:flex;"><span>|- layouts  <span style="color:#75715e"># this is empty, I put the themes/lugo/layout/shortcodes into this folder</span>
+</span></span><span style="display:flex;"><span>|- static
+</span></span><span style="display:flex;"><span>|- config.tmol
+</span></span><span style="display:flex;"><span>|- README.md
+</span></span></code></pre></div><h2 id="4-some-commands">4 some commands</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ls foldername
+</span></span><span style="display:flex;"><span>code filename.type
+</span></span><span style="display:flex;"><span>cp folder1/file1 folder2
+</span></span></code></pre></div>
+</article>
+
+
+
+</html>

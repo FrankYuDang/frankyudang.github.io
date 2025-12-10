@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>DSA Ch03 Basic Data Structure | Frank YD Site</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.147.8">
+<meta name="description" content="my blog">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://frankyudang.github.io/css/index.css">
+<link rel="canonical" href="https://frankyudang.github.io/posts/2025/06/dsa-ch03-basic-data-structure/">
+<link rel="alternate" type="application/rss+xml" href="" title="Frank YD Site">
+
+<header>
+  
+    <a href="https://frankyudang.github.io/" class="title">Frank YD Site</a>
+  
+  
+    <nav>
+    
+      <a href="/about/">About</a>
+    
+    </nav>
+  
+</header>
+
+<article>
+  <header>
+    <h1>DSA Ch03 Basic Data Structure</h1>
+    <time datetime="2025-06-15T13:20:38&#43;08:00">June 15, 2025</time>
+  </header>
+  <h2 id="to-do">To do</h2>
+<h2 id="h2-01-infixtopostfix-中缀转后缀计算数值">H2-01-infixtopostfix 中缀转后缀+计算数值</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ======= 1 中缀表达式求值 =======</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 通过把“中缀转后缀”和“后缀求值”两个算法功能集成在一起（非简单的顺序调用），</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 实现对中缀表达式直接求值，新算法还是从左到右扫描中缀表达式，</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 但同时使用两个栈，一个暂存操作符，一个暂存操作数，来进行求值。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 创建一个函数，接受参数为一个字符串，即一个中缀表达式，</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 其中每个数字或符号间由一个空格隔开；</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 返回一个浮点数，即求值的结果。（支持 + - * / ^ 五种运算）</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#   其中“ / ”定义为真除True DIV，结果是浮点数类型</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 输入样例1：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ( 2 + 3 ) * 6 + 4 / 2</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 输出样例1：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 32.0</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 输入样例2：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2 ^ 3 + 4 * 5 - 16 / 2</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 输出样例2：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 20.0</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 输入样例3：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ( 5 + 1 ) * 2 / 3 - 3 ^ ( 2 + 8 / 4 ) / 9 + 6</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 输出样例3：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 1.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Stack</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>items <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">isEmpty</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>items <span style="color:#f92672">==</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">push</span>(self, item):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>items<span style="color:#f92672">.</span>append(item)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">pop</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>items<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">peek</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>items[len(self<span style="color:#f92672">.</span>items) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">size</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> len(self<span style="color:#f92672">.</span>items)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">doMath</span>( token, op1, op2):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> token <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;^&#34;</span>:
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> op2 <span style="color:#f92672">**</span> op1
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> token <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;*&#34;</span>:
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> op2 <span style="color:#f92672">*</span> op1
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> token <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;/&#34;</span>:
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> op2 <span style="color:#f92672">/</span> op1
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> token <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;+&#34;</span>:
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> op2 <span style="color:#f92672">+</span> op1
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> op2 <span style="color:#f92672">-</span> op1
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">calculate</span>(s) <span style="color:#f92672">-&gt;</span> float:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 请在此编写你的代码（可删除pass语句）</span>
+</span></span><span style="display:flex;"><span>    prec <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    prec[<span style="color:#e6db74">&#34;^&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>    prec[<span style="color:#e6db74">&#34;*&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>    prec[<span style="color:#e6db74">&#34;/&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>    prec[<span style="color:#e6db74">&#34;+&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>    prec[<span style="color:#e6db74">&#34;-&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span> 
+</span></span><span style="display:flex;"><span>    prec[<span style="color:#e6db74">&#34;(&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    tokenList <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>)
+</span></span><span style="display:flex;"><span>    st <span style="color:#f92672">=</span> Stack()
+</span></span><span style="display:flex;"><span>    postfixList <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> token <span style="color:#f92672">in</span> tokenList:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>            num <span style="color:#f92672">=</span> float(token)
+</span></span><span style="display:flex;"><span>            postfixList<span style="color:#f92672">.</span>append(num)
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># // if token in &#34;0123456789&#34;:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">ValueError</span>:  
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> token <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;(&#34;</span>:
+</span></span><span style="display:flex;"><span>                st<span style="color:#f92672">.</span>push(token)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">elif</span> token <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;)&#34;</span>:
+</span></span><span style="display:flex;"><span>                topToken <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">while</span> topToken <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;(&#34;</span>:
+</span></span><span style="display:flex;"><span>                    postfixList<span style="color:#f92672">.</span>append(topToken)
+</span></span><span style="display:flex;"><span>                    topToken <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>: 
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">while</span> (<span style="color:#f92672">not</span> st<span style="color:#f92672">.</span>isEmpty()) <span style="color:#f92672">and</span> (prec[st<span style="color:#f92672">.</span>peek()] <span style="color:#f92672">&gt;=</span> prec[token]):
+</span></span><span style="display:flex;"><span>                    postfixList<span style="color:#f92672">.</span>append(st<span style="color:#f92672">.</span>pop())
+</span></span><span style="display:flex;"><span>                st<span style="color:#f92672">.</span>push(token)
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> st<span style="color:#f92672">.</span>isEmpty():
+</span></span><span style="display:flex;"><span>        postfixList<span style="color:#f92672">.</span>append(st<span style="color:#f92672">.</span>pop())
+</span></span><span style="display:flex;"><span>    print(postfixList)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    oprandStack <span style="color:#f92672">=</span> Stack()
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> token <span style="color:#f92672">in</span> postfixList:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>           oprandStack<span style="color:#f92672">.</span>push(float(token)) 
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># if token in &#34;0123456789&#34;:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#     oprandStack.push(int(token))</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">ValueError</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># else:</span>
+</span></span><span style="display:flex;"><span>            op1 <span style="color:#f92672">=</span> oprandStack<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>            op2 <span style="color:#f92672">=</span> oprandStack<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">=</span> doMath(token, op1, op2)
+</span></span><span style="display:flex;"><span>            oprandStack<span style="color:#f92672">.</span>push(result)
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> oprandStack<span style="color:#f92672">.</span>pop()  
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>          
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 代码结束</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 调用检验</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;======== 1-calculate ========&#34;</span>)
+</span></span><span style="display:flex;"><span>print(calculate(<span style="color:#e6db74">&#34;( 2 + 3 ) * 6 + 4.8 / 2&#34;</span>))
+</span></span><span style="display:flex;"><span>print(calculate(<span style="color:#e6db74">&#34;2 ^ 3 + 4 * 5 - 16 / 2&#34;</span>))
+</span></span><span style="display:flex;"><span>print(calculate(<span style="color:#e6db74">&#34;( 5 + 1 ) * 2 / 3 - 3 ^ ( 2 + 8 / 4 ) / 9 + 6&#34;</span>))
+</span></span></code></pre></div><h2 id="oj-w03-01-有效括号">OJ-W03-01-有效括号</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pythonds.basic.stack <span style="color:#f92672">import</span> Stack
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>st <span style="color:#f92672">=</span> Stack()
+</span></span><span style="display:flex;"><span>d <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;(&#34;</span>:<span style="color:#e6db74">&#34;)&#34;</span>, <span style="color:#e6db74">&#34;{&#34;</span>:<span style="color:#e6db74">&#34;}&#34;</span>, <span style="color:#e6db74">&#34;[&#34;</span>:<span style="color:#e6db74">&#34;]&#34;</span>}
+</span></span><span style="display:flex;"><span>s <span style="color:#f92672">=</span> input()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> a <span style="color:#f92672">in</span> s:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> a <span style="color:#f92672">in</span> <span style="color:#e6db74">&#34;([{&#34;</span>:
+</span></span><span style="display:flex;"><span>        st<span style="color:#f92672">.</span>push(a)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> st<span style="color:#f92672">.</span>isEmpty() <span style="color:#f92672">or</span> <span style="color:#f92672">not</span> a <span style="color:#f92672">==</span> d[st<span style="color:#f92672">.</span>pop()]:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;False&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> st<span style="color:#f92672">.</span>isEmpty():
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;True&#34;</span>) <span style="color:#75715e"># 正好匹配</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;False&#34;</span>)
+</span></span></code></pre></div><h2 id="oj-w03-02-一维消消乐">OJ-W03-02-一维消消乐</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pythonds.basic.stack <span style="color:#f92672">import</span> Stack
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>st <span style="color:#f92672">=</span> Stack()
+</span></span><span style="display:flex;"><span>s <span style="color:#f92672">=</span> input()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> a <span style="color:#f92672">in</span> s:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> st<span style="color:#f92672">.</span>isEmpty() <span style="color:#f92672">and</span> a <span style="color:#f92672">==</span> st<span style="color:#f92672">.</span>peek():
+</span></span><span style="display:flex;"><span>        st<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        st<span style="color:#f92672">.</span>push(a)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> st<span style="color:#f92672">.</span>isEmpty():
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;None&#34;</span>)  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(st))
+</span></span><span style="display:flex;"><span>  
+</span></span></code></pre></div><h2 id="oj-w03-03--洗碗工">OJ-W03-03- 洗碗工</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pythonds.basic.stack <span style="color:#f92672">import</span> Stack
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>st <span style="color:#f92672">=</span> Stack()
+</span></span><span style="display:flex;"><span>s <span style="color:#f92672">=</span> input()
+</span></span><span style="display:flex;"><span>n <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span> <span style="color:#75715e"># 正在洗盘子的编号</span>
+</span></span><span style="display:flex;"><span>i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span> <span style="color:#75715e"># 取盘子的次序，s[i] 取盘子的编号</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">and</span> n <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>:
+</span></span><span style="display:flex;"><span>    k <span style="color:#f92672">=</span> int(s[i])
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 洗盘子</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 如果顾客取到了盘子编号 k 的盘子，那么正在洗的盘子到K 之间的所有盘子都洗好叠放</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">&lt;=</span> k:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> m <span style="color:#f92672">in</span> range(n, k<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>            st<span style="color:#f92672">.</span>push(m)
+</span></span><span style="display:flex;"><span>            print(st)
+</span></span><span style="display:flex;"><span>        n <span style="color:#f92672">=</span> k <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#75715e"># 正在洗下一个盘子</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>: <span style="color:#75715e"># 取到编号 k 的盘子比正在洗的编号还小，乱序了</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span> 
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;the current state is </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{</span>st<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 取盘子</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 从顶上取盘子，从k开始取盘子，一直到对不上号，说明要去取的还没洗</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> st<span style="color:#f92672">.</span>isEmpty() <span style="color:#f92672">and</span> st<span style="color:#f92672">.</span>peek() <span style="color:#f92672">==</span> int(s[i]):
+</span></span><span style="display:flex;"><span>        m <span style="color:#f92672">=</span> st<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>        print(st)
+</span></span><span style="display:flex;"><span>        i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> st<span style="color:#f92672">.</span>isEmpty():
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Yes&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;No&#34;</span>) 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#* input: 1043257689</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#* output: Yes</span>
+</span></span></code></pre></div><h2 id="pysda-308-queue">pysda-308-queue</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">queue</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>items <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">isEmpty</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># // return self.isEmpty == []</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>items <span style="color:#f92672">==</span> []
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">enqueue</span>(self, item):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>items<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>, item)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dequeue</span>(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>items<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">size</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> len(self<span style="color:#f92672">.</span>items)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#//l = &#34;-&#34; * 7</span>
+</span></span><span style="display:flex;"><span>        l <span style="color:#f92672">=</span> len(self<span style="color:#f92672">.</span>items) <span style="color:#f92672">*</span> <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># s = &#34;|&#34; + &#34;-&#34; * l  + &#34;)\n&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> a <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>items:
+</span></span><span style="display:flex;"><span>            s <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;| </span><span style="color:#e6db74">%-5a</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> a 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#// s = &#34;\n|&#34; + &#34;-&#34; * l + &#34;)\n&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#! 叠加的关系</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># s += &#34;\n|&#34; + &#34;-&#34; * l  + &#34;)&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> s 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__str__</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">__repr__</span> 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    q <span style="color:#f92672">=</span> queue()
+</span></span><span style="display:flex;"><span>    q<span style="color:#f92672">.</span>enqueue(<span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>    q<span style="color:#f92672">.</span>enqueue(<span style="color:#e6db74">&#34;dog&#34;</span>)
+</span></span><span style="display:flex;"><span>    q<span style="color:#f92672">.</span>enqueue(<span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>    print(q)
+</span></span><span style="display:flex;"><span>    print(q<span style="color:#f92672">.</span>size())
+</span></span><span style="display:flex;"><span>    print(q<span style="color:#f92672">.</span>isEmpty())
+</span></span><span style="display:flex;"><span>    q<span style="color:#f92672">.</span>enqueue(<span style="color:#ae81ff">8.4</span>)
+</span></span><span style="display:flex;"><span>    print(q)
+</span></span><span style="display:flex;"><span>    q<span style="color:#f92672">.</span>dequeue()
+</span></span><span style="display:flex;"><span>    q<span style="color:#f92672">.</span>dequeue()
+</span></span><span style="display:flex;"><span>    q<span style="color:#f92672">.</span>size()
+</span></span><span style="display:flex;"><span>    print(q)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    
+</span></span></code></pre></div><h2 id="10-queue-队列">10 queue 队列</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Queue</span>:
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self):
+</span></span><span style="display:flex;"><span>self<span style="color:#f92672">.</span>items <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">isEmpty</span>(self):
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>items <span style="color:#f92672">==</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">enqueue</span>(self, item): <span style="color:#75715e"># 在list的首， 也就是 队列的队尾添加</span>
+</span></span><span style="display:flex;"><span>self<span style="color:#f92672">.</span>itmes<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>, item)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dequeue</span>(self, item): <span style="color:#75715e"># 在list的尾， 也就是 队列的队尾添加</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>items<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">size</span>(self):
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> len(self<span style="color:#f92672">.</span>items)
+</span></span></code></pre></div><h2 id="pydsa-309-热土豆">pydsa-309-热土豆</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pythonds.basic.queue <span style="color:#f92672">import</span> Queue
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">hotPotato</span>(name_list, num):
+</span></span><span style="display:flex;"><span>    simqueue <span style="color:#f92672">=</span> Queue()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> a <span style="color:#f92672">in</span> name_list:
+</span></span><span style="display:flex;"><span>        simqueue<span style="color:#f92672">.</span>enqueue(a)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># print(q)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> simqueue<span style="color:#f92672">.</span>size() <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(num):
+</span></span><span style="display:flex;"><span>            simqueue<span style="color:#f92672">.</span>enqueue(simqueue<span style="color:#f92672">.</span>dequeue())
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>        simqueue<span style="color:#f92672">.</span>dequeue()
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> simqueue<span style="color:#f92672">.</span>dequeue()
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># name_list = [&#34;Brad&#34;, &#34;Kent&#34;, &#34;Jane&#34;, &#34;Susan&#34;, &#34;David&#34;, &#34;Bill&#34;]</span>
+</span></span><span style="display:flex;"><span>    name_list <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;Bill&#34;</span>, <span style="color:#e6db74">&#34;David&#34;</span>, <span style="color:#e6db74">&#34;Susan&#34;</span>, <span style="color:#e6db74">&#34;Jane&#34;</span>, <span style="color:#e6db74">&#34;Kent&#34;</span>, <span style="color:#e6db74">&#34;Brad&#34;</span>]
+</span></span><span style="display:flex;"><span>    num <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>    print(hotPotato(name_list, num))
+</span></span></code></pre></div><h2 id="pydsa-312-双端队列">pydsa-312-双端队列</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Deque</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>items <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">addFront</span>(self, item):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>items<span style="color:#f92672">.</span>append(item)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">addRear</span>(self, item):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>items<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>, item)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">removeFront</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>items<span style="color:#f92672">.</span>pop() <span style="color:#75715e">#! 带有返回值</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">removeRear</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>items<span style="color:#f92672">.</span>pop(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">isEmpty</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>items <span style="color:#f92672">==</span> []
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">size</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> len(self<span style="color:#f92672">.</span>items)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> len(self<span style="color:#f92672">.</span>items) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;|&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;)&#34;</span>
+</span></span><span style="display:flex;"><span>            s <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">|&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;| None&#34;</span>  
+</span></span><span style="display:flex;"><span>            s <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">|&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;)&#34;</span>
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>: 
+</span></span><span style="display:flex;"><span>            l <span style="color:#f92672">=</span> len(self<span style="color:#f92672">.</span>items) <span style="color:#f92672">*</span> <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>            s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;|&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#f92672">*</span> l <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> a <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>items:
+</span></span><span style="display:flex;"><span>                s <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;|&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;| </span><span style="color:#e6db74">%-5s</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> a 
+</span></span><span style="display:flex;"><span>            s <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">|&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#f92672">*</span> l <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;)&#34;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> s 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__str__</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">__repr__</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    d <span style="color:#f92672">=</span> Deque()
+</span></span><span style="display:flex;"><span>    print(d) 
+</span></span><span style="display:flex;"><span>    print(d<span style="color:#f92672">.</span>isEmpty())
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    d<span style="color:#f92672">.</span>addRear(<span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>    d<span style="color:#f92672">.</span>addRear(<span style="color:#e6db74">&#34;dog&#34;</span>)
+</span></span><span style="display:flex;"><span>    d<span style="color:#f92672">.</span>addFront(<span style="color:#e6db74">&#34;cat&#34;</span>)
+</span></span><span style="display:flex;"><span>    d<span style="color:#f92672">.</span>addFront(<span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>    print(d)
+</span></span><span style="display:flex;"><span>    print(d<span style="color:#f92672">.</span>items)
+</span></span><span style="display:flex;"><span>    print(d<span style="color:#f92672">.</span>size())
+</span></span><span style="display:flex;"><span>    print(d<span style="color:#f92672">.</span>isEmpty())
+</span></span><span style="display:flex;"><span>    d<span style="color:#f92672">.</span>addRear(<span style="color:#ae81ff">8.4</span>)
+</span></span><span style="display:flex;"><span>    print(d<span style="color:#f92672">.</span>items)
+</span></span><span style="display:flex;"><span>    d<span style="color:#f92672">.</span>removeRear()
+</span></span><span style="display:flex;"><span>    d<span style="color:#f92672">.</span>removeFront()
+</span></span><span style="display:flex;"><span>    print(d) 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span></code></pre></div><h2 id="pydsa-312-回文词">pydsa-312-回文词</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pythonds.basic.deque <span style="color:#f92672">import</span> Deque
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">palchecker</span>(aString):
+</span></span><span style="display:flex;"><span>    charDeque <span style="color:#f92672">=</span> Deque()
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> a <span style="color:#f92672">in</span> aString:
+</span></span><span style="display:flex;"><span>        charDeque<span style="color:#f92672">.</span>addRear(a)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    stillEuqal <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> charDeque<span style="color:#f92672">.</span>size() <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">and</span> stillEuqal:
+</span></span><span style="display:flex;"><span>        charFront <span style="color:#f92672">=</span> charDeque<span style="color:#f92672">.</span>removeFront()
+</span></span><span style="display:flex;"><span>        charRear <span style="color:#f92672">=</span> charDeque<span style="color:#f92672">.</span>removeRear()
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> charFront <span style="color:#f92672">!=</span> charRear:
+</span></span><span style="display:flex;"><span>            stillEuqal <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> stillEuqal
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(palchecker(<span style="color:#e6db74">&#34;abccbd&#34;</span>)) 
+</span></span><span style="display:flex;"><span>print(palchecker(<span style="color:#e6db74">&#34;abccba&#34;</span>)) 
+</span></span></code></pre></div><h2 id="pydsa-312-打印机模拟">pydsa-312-打印机模拟</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pythonds.basic.queue <span style="color:#f92672">import</span> Queue
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Printer</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, ppm):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>pagerate <span style="color:#f92672">=</span> ppm
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>currentTask <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>timeRemaining <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">tick</span>(self): <span style="color:#75715e">#打印 1 秒</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>currentTask <span style="color:#f92672">!=</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>timeRemaining <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>timeRemaining <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>timeRemaining <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>                self<span style="color:#f92672">.</span>currentTask <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">busy</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>currentTask <span style="color:#f92672">!=</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">startNext</span>(self, newtask):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>currentTask <span style="color:#f92672">=</span> newtask
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>timeRemaining <span style="color:#f92672">=</span> newtask<span style="color:#f92672">.</span>getPages() <span style="color:#f92672">/</span> self<span style="color:#f92672">.</span>pagerate <span style="color:#f92672">*</span> <span style="color:#ae81ff">60</span> <span style="color:#75715e"># unit is second</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> pagerate is </span><span style="color:#e6db74">%3d</span><span style="color:#e6db74">, currentTask is </span><span style="color:#e6db74">%s</span><span style="color:#e6db74">, remaining time is </span><span style="color:#e6db74">%5d</span><span style="color:#e6db74">.&#34;</span> <span style="color:#f92672">%</span> (self<span style="color:#f92672">.</span>pagerate, self<span style="color:#f92672">.</span>currentTask, self<span style="color:#f92672">.</span>timeRemaining)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> s 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__str__</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">__repr__</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Task</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, time):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>timestamp <span style="color:#f92672">=</span> time
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>pages <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randrange(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">21</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">getStamp</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>timestamp
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">getPages</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>pages 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">waitTimes</span>(self, currenttime):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> currenttime <span style="color:#f92672">-</span> self<span style="color:#f92672">.</span>timestamp
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> the starting time is </span><span style="color:#e6db74">%5d</span><span style="color:#e6db74"> and the number of papges is </span><span style="color:#e6db74">%5d</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> (self<span style="color:#f92672">.</span>timestamp, self<span style="color:#f92672">.</span>pages)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> s 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__str__</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">__repr__</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">newPrintTask</span>():
+</span></span><span style="display:flex;"><span>    num <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randrange(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">181</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> num <span style="color:#f92672">==</span> <span style="color:#ae81ff">180</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>   
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">simulation</span>(numSeconds, pagesPerMinute):
+</span></span><span style="display:flex;"><span>    labprinter <span style="color:#f92672">=</span> Printer(pagesPerMinute)
+</span></span><span style="display:flex;"><span>    printQueue <span style="color:#f92672">=</span> Queue()
+</span></span><span style="display:flex;"><span>    waitingtimes <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> currentSecond <span style="color:#f92672">in</span> range(numSeconds):
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> newPrintTask():
+</span></span><span style="display:flex;"><span>            task <span style="color:#f92672">=</span> Task(currentSecond)
+</span></span><span style="display:flex;"><span>            printQueue<span style="color:#f92672">.</span>enqueue(task)
+</span></span><span style="display:flex;"><span>            print(task)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># print(printQueue)</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">not</span> labprinter<span style="color:#f92672">.</span>busy()) <span style="color:#f92672">and</span> (<span style="color:#f92672">not</span> printQueue<span style="color:#f92672">.</span>isEmpty()):
+</span></span><span style="display:flex;"><span>            nexttask <span style="color:#f92672">=</span> printQueue<span style="color:#f92672">.</span>dequeue()
+</span></span><span style="display:flex;"><span>            waitingtimes<span style="color:#f92672">.</span>append(nexttask<span style="color:#f92672">.</span>waitTimes(currentSecond))
+</span></span><span style="display:flex;"><span>            labprinter<span style="color:#f92672">.</span>startNext(nexttask)
+</span></span><span style="display:flex;"><span>            print(nexttask)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># print(printQueue)</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;The current time is </span><span style="color:#e6db74">%5d</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> currentSecond)  
+</span></span><span style="display:flex;"><span>        labprinter<span style="color:#f92672">.</span>tick()
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    averageWait <span style="color:#f92672">=</span> sum(waitingtimes) <span style="color:#f92672">/</span> len(waitingtimes)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Average Wait </span><span style="color:#e6db74">%6.2f</span><span style="color:#e6db74"> secs </span><span style="color:#e6db74">%3d</span><span style="color:#e6db74"> tasks remaining.&#34;</span> <span style="color:#f92672">%</span> (averageWait, printQueue<span style="color:#f92672">.</span>size()))
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    timeLength <span style="color:#f92672">=</span> <span style="color:#ae81ff">600</span>
+</span></span><span style="display:flex;"><span>    pagePerMinute <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;In the duration of </span><span style="color:#e6db74">%7d</span><span style="color:#e6db74"> seconds, and the ppm is </span><span style="color:#e6db74">%3d</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> (timeLength, pagePerMinute))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>):
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;-&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#34; </span><span style="color:#e6db74">%2d</span><span style="color:#e6db74"> round&#34;</span> <span style="color:#f92672">%</span> i, <span style="color:#e6db74">&#34;-&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>        simulation(timeLength, pagePerMinute)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># timeLength = 3600</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># pagePerMinute = 10</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># print(&#34;In the duration of %7d seconds, and the ppm is %3d&#34; % (timeLength, pagePerMinute))</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># for i in range(10):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#     simulation(timeLength, pagePerMinute)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># print(&#34;-&#34;*25)</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span></code></pre></div><h2 id="pydsa-313-无序列表">pydsa-313 无序列表</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, initdata):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>data <span style="color:#f92672">=</span> initdata
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">getData</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>data
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">getNext</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">setData</span>(self, newdata):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>data <span style="color:#f92672">=</span> newdata
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">setNext</span>(self, newnext):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> newnext
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#* 链表的实现 ： 无序表</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UnorderedList</span>:   
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>head <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span> 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">isEmpty</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>head <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span> 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add</span>(self, item): <span style="color:#75715e">#! add 方法的实现</span>
+</span></span><span style="display:flex;"><span>        temp <span style="color:#f92672">=</span> Node(item)
+</span></span><span style="display:flex;"><span>        temp<span style="color:#f92672">.</span>setNext(self<span style="color:#f92672">.</span>head)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>head <span style="color:#f92672">=</span> temp
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">size</span>(self):
+</span></span><span style="display:flex;"><span>        current <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>head
+</span></span><span style="display:flex;"><span>        count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> current <span style="color:#f92672">!=</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>            count <span style="color:#f92672">=</span> count <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>            current <span style="color:#f92672">=</span> current<span style="color:#f92672">.</span>getNext()
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> count 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">search</span>(self, item):
+</span></span><span style="display:flex;"><span>        current <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>head
+</span></span><span style="display:flex;"><span>        found <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> current <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> found:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> current<span style="color:#f92672">.</span>getData() <span style="color:#f92672">==</span> item:
+</span></span><span style="display:flex;"><span>                found <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># break</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                current <span style="color:#f92672">=</span> current<span style="color:#f92672">.</span>getNext()
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> found  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">remove</span>(self, item):
+</span></span><span style="display:flex;"><span>        current <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>head
+</span></span><span style="display:flex;"><span>        previous <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>        found <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> found:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> current<span style="color:#f92672">.</span>getData() <span style="color:#f92672">==</span> item:
+</span></span><span style="display:flex;"><span>                found <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                previous <span style="color:#f92672">=</span> current       
+</span></span><span style="display:flex;"><span>                current <span style="color:#f92672">=</span> current<span style="color:#f92672">.</span>getNext() 
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> previous <span style="color:#f92672">==</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>head <span style="color:#f92672">=</span> current<span style="color:#f92672">.</span>getNext()
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:  
+</span></span><span style="display:flex;"><span>            previous<span style="color:#f92672">.</span>setNext(current<span style="color:#f92672">.</span>getNext())
+</span></span><span style="display:flex;"><span>              
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        current <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>head
+</span></span><span style="display:flex;"><span>        nodes <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> current <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>            nodes<span style="color:#f92672">.</span>append(str(current<span style="color:#f92672">.</span>getData()))
+</span></span><span style="display:flex;"><span>            current <span style="color:#f92672">=</span> current<span style="color:#f92672">.</span>getNext()
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        nodes<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;None&#34;</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;-&gt;&#34;</span><span style="color:#f92672">.</span>join(nodes)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__str__</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">__repr__</span> 
+</span></span><span style="display:flex;"><span>             
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    temp <span style="color:#f92672">=</span> Node(<span style="color:#ae81ff">93</span>)
+</span></span><span style="display:flex;"><span>    print(temp<span style="color:#f92672">.</span>getData())
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    mylist <span style="color:#f92672">=</span> UnorderedList()
+</span></span><span style="display:flex;"><span>    print(mylist<span style="color:#f92672">.</span>head)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">31</span>)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">77</span>)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">17</span>)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">93</span>)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">26</span>)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">54</span>)  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    print(mylist)
+</span></span><span style="display:flex;"><span>    print(mylist<span style="color:#f92672">.</span>size())
+</span></span><span style="display:flex;"><span>    print(mylist<span style="color:#f92672">.</span>search(<span style="color:#ae81ff">77</span>)) 
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>remove(<span style="color:#ae81ff">17</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    print(mylist)  
+</span></span></code></pre></div><h2 id="pydsa-315-有序列表">pydsa-315 有序列表</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, initdata):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>data <span style="color:#f92672">=</span> initdata
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">getData</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>data
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">getNext</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>next
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">setData</span>(self, newdata):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>data <span style="color:#f92672">=</span> newdata
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">setNext</span>(self, newnext):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>next <span style="color:#f92672">=</span> newnext 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">orderedList</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>head <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">isEmpty</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>head <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">size</span>(self):
+</span></span><span style="display:flex;"><span>        current <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>head
+</span></span><span style="display:flex;"><span>        count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> current <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>            count <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>            current <span style="color:#f92672">=</span> current<span style="color:#f92672">.</span>getNext()
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> count 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">search</span>(self, item):
+</span></span><span style="display:flex;"><span>        current <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>head
+</span></span><span style="display:flex;"><span>        found <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>        stop <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> current <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> found <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> stop:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> current<span style="color:#f92672">.</span>getData() <span style="color:#f92672">==</span> item:
+</span></span><span style="display:flex;"><span>                found <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> current<span style="color:#f92672">.</span>getData() <span style="color:#f92672">&gt;</span> item:
+</span></span><span style="display:flex;"><span>                    stop <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                    current <span style="color:#f92672">=</span> current<span style="color:#f92672">.</span>getNext()
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> found   
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add</span>(self, item):
+</span></span><span style="display:flex;"><span>        current <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>head
+</span></span><span style="display:flex;"><span>        previous <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span> 
+</span></span><span style="display:flex;"><span>        stop <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> current <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> stop:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> current<span style="color:#f92672">.</span>getData() <span style="color:#f92672">&gt;</span> item:
+</span></span><span style="display:flex;"><span>                stop <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                previous <span style="color:#f92672">=</span> current
+</span></span><span style="display:flex;"><span>                current <span style="color:#f92672">=</span> current<span style="color:#f92672">.</span>getNext()
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>        temp <span style="color:#f92672">=</span> Node(item)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> previous <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>            temp<span style="color:#f92672">.</span>setNext(self<span style="color:#f92672">.</span>head) <span style="color:#75715e">#self.head 的标签</span>
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>head <span style="color:#f92672">=</span> temp 
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">#// current.setNext = Node(newdata)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            temp<span style="color:#f92672">.</span>setNext(current)
+</span></span><span style="display:flex;"><span>            previous<span style="color:#f92672">.</span>setNext(temp) 
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># previous.setNext = Node(newdata)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># current.setNext(current.getNext())</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        current <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>head
+</span></span><span style="display:flex;"><span>        nodes <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> current <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>            nodes<span style="color:#f92672">.</span>append(str(current<span style="color:#f92672">.</span>getData()))
+</span></span><span style="display:flex;"><span>            current <span style="color:#f92672">=</span> current<span style="color:#f92672">.</span>getNext()
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        nodes<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;None&#34;</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;-&gt;&#34;</span><span style="color:#f92672">.</span>join(nodes)  
+</span></span><span style="display:flex;"><span>         
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    temp <span style="color:#f92672">=</span> Node(<span style="color:#ae81ff">93</span>)
+</span></span><span style="display:flex;"><span>    print(temp<span style="color:#f92672">.</span>getData())
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    mylist <span style="color:#f92672">=</span> orderedList()
+</span></span><span style="display:flex;"><span>    print(mylist<span style="color:#f92672">.</span>head)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">31</span>)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">77</span>)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">17</span>)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">93</span>)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">26</span>)
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">54</span>)  
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    print(mylist)
+</span></span><span style="display:flex;"><span>    print(mylist<span style="color:#f92672">.</span>size())
+</span></span><span style="display:flex;"><span>    print(mylist<span style="color:#f92672">.</span>search(<span style="color:#ae81ff">77</span>)) 
+</span></span><span style="display:flex;"><span>    mylist<span style="color:#f92672">.</span>add(<span style="color:#ae81ff">7</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    print(mylist)   
+</span></span></code></pre></div><h3 id="10-queue-队列-1">10 queue 队列</h3>
+<p>python</p>
+<p>class Queue:
+def <strong>init</strong>(self):
+self.items = []</p>
+<p>def isEmpty(self):
+return self.items == []</p>
+<p>def enqueue(self, item): # 在list的首， 也就是 队列的队尾添加
+self.itmes.insert(0, item)</p>
+<p>def dequeue(self, item): # 在list的尾， 也就是 队列的队尾添加
+return self.items.pop()</p>
+<p>def size(self):
+return len(self.items)</p>
+
+</article>
+
+
+
+</html>

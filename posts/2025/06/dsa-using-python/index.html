@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title> DSA-Using-Python | Frank YD Site</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.147.8">
+<meta name="description" content="my blog">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://frankyudang.github.io/css/index.css">
+<link rel="canonical" href="https://frankyudang.github.io/posts/2025/06/dsa-using-python/">
+<link rel="alternate" type="application/rss+xml" href="" title="Frank YD Site">
+
+<header>
+  
+    <a href="https://frankyudang.github.io/" class="title">Frank YD Site</a>
+  
+  
+    <nav>
+    
+      <a href="/about/">About</a>
+    
+    </nav>
+  
+</header>
+
+<article>
+  <header>
+    <h1> DSA-Using-Python</h1>
+    <time datetime="2025-06-08T15:38:49&#43;08:00">June 08, 2025</time>
+  </header>
+  <p>2025年6月我开始自学数据结构与算法，之前2025年10月曾经短暂尝试通过看书学习，但是发现没有用。所以现在我开始通过自己的自学，写出教程，教育别人学习数据结构与算法。</p>
+<p>首先，明确编程是一种手艺，不是知识。</p>
+<h2 id="学习流程">学习流程</h2>
+<p>这个数据结构与算法的课程，和后续的leetcode刷题，将成为我的日常规范，每天必做的事项。权重也很高。 我们 mooc -&gt; mooc 代码实践 - &gt;mooc 选择题 -&gt; open judge -&gt; 课上听课。</p>
+<p>学习的重点是解决问题的思路和对题型的理解，</p>
+<h2 id="学习规划">学习规划</h2>
+<p>数据结构与算法python版 自学课程指南 <a href="https://www.bilibili.com/opus/679262894843494400">link</a></p>
+<p><strong>第五周 - 2025-06-21 -基本结构（下）“队列/无序表”</strong></p>
+<p><strong>第六周 - 2025-06-28 - 递归（上）“递归/可视化/应用”</strong></p>
+<p>第七周 - 假期</p>
+<p><strong>第八周 - 2025-07-05 - 递归（下）“动态规划”</strong></p>
+<p><strong>第九周  - 2025-07-12 - 排序查找（上）“顺序/二分查找/各种排序”</strong></p>
+<p><strong>第十周 - 2025-07-19 - 排序查找（下）“散列”</strong></p>
+<p>第十一周 - 假期</p>
+<p><strong>第十二周 - 2025-07-26 - 树及算法（上）“树/二叉堆”</strong></p>
+<p><strong>第十三周 - 2025-08-02 - 树及算法（下）“BST/AVL树”</strong></p>
+<p><strong>第十四周 - 2025-08-09 - 图及算法（上）“图/BFS/DFS”</strong></p>
+<p><strong>第十五周- 2025-08-17 - 图及算法（下）“拓扑排序/Dijkstra/Prim”</strong></p>
+<p><strong>第17周 -2025-08-23 - 期末复习 -</strong></p>
+<h2 id="算法分析">算法分析</h2>
+<p>算法复杂度取决于 赋值的次数</p>
+<h2 id="基本数据结构">基本数据结构</h2>
+<h3 id="栈">栈</h3>
+<p>栈的数据类型 - peek,</p>
+<h3 id="队列">队列</h3>
+<h3 id="双端队列">双端队列</h3>
+<h3 id="列表">列表</h3>
+<h2 id="编程的零散问题解决">编程的零散问题解决</h2>
+<h3 id="import-的问题">import 的问题</h3>
+<p>通常把import 的文件放在同级目录下。或者放在系统搜索的路径</p>
+<h3 id="调试过程中的关键信息">调试过程中的关键信息</h3>
+<ol>
+<li>
+<p><code>__repr__</code> 和 <code>__str__</code> 的调用用于打印系统信息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Stack</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>items <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        l <span style="color:#f92672">=</span> len(self<span style="color:#f92672">.</span>items) <span style="color:#f92672">*</span> <span style="color:#ae81ff">7</span> <span style="color:#75715e">#!划线</span>
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;|&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-&#34;</span><span style="color:#f92672">*</span>l <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">|&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> a <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>items: 
+</span></span><span style="display:flex;"><span>            s <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;| </span><span style="color:#e6db74">%-5s</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> a 
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">|&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-&#34;</span><span style="color:#f92672">*</span>l <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;)&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> s 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__str__</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">__repr__</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    st <span style="color:#f92672">=</span> Stack() 
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>push(<span style="color:#e6db74">&#34;R&#34;</span>)
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>push(<span style="color:#e6db74">&#34;win&#34;</span>)
+</span></span></code></pre></div><p>2。字符串的打印和对齐 - 格式化字符串</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>item <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;banana&#34;</span>
+</span></span><span style="display:flex;"><span>price <span style="color:#f92672">=</span> <span style="color:#ae81ff">24.0</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34; the </span><span style="color:#e6db74">%s</span><span style="color:#e6db74"> costs </span><span style="color:#e6db74">%f</span><span style="color:#e6db74"> cents&#34;</span> <span style="color:#f92672">%</span> (item, price))
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;the </span><span style="color:#e6db74">{</span>item<span style="color:#e6db74">:</span><span style="color:#e6db74">^10s</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> costs </span><span style="color:#e6db74">{</span>price<span style="color:#e6db74">:</span><span style="color:#e6db74">^10.2f</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> cents&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>output:
+</span></span><span style="display:flex;"><span> the banana costs <span style="color:#ae81ff">24.000000</span> cents
+</span></span><span style="display:flex;"><span>the   banana   costs   <span style="color:#ae81ff">24.00</span>    cents
+</span></span></code></pre></div></li>
+<li>
+<p>添加断点的调试过程</p>
+</li>
+</ol>
+<p><code>F5</code>启动调试，<code>F10</code> 单步调试，</p>
+<p>断点可以添加不同的 conditions, 进行查看</p>
+<p>3 ·<code>break</code> 的用法</p>
+<p>break 可以直接跳出 循环结构 如下面的例子</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>n <span style="color:#f92672">=</span> int(input(<span style="color:#e6db74">&#34;A number :&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>, n<span style="color:#f92672">//</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">%</span> i <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> i <span style="color:#f92672">&lt;</span> n:
+</span></span><span style="display:flex;"><span>    print(n, <span style="color:#e6db74">&#34;不是素数&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    print(n, <span style="color:#e6db74">&#34;是素数&#34;</span>)
+</span></span></code></pre></div><ol start="4">
+<li>
+<p><code>lambda</code> 的用法
+<code>lambda</code>可以声明一个匿名函数（小函数）
+<code>lambda args: expression</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># source: python distilled p.115</span>
+</span></span><span style="display:flex;"><span>a <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> x, y: x <span style="color:#f92672">+</span> y
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> a(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 按不同字母的数量对单词列表进行排序</span>
+</span></span><span style="display:flex;"><span>words <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;apple&#34;</span>, <span style="color:#e6db74">&#34;banana&#34;</span>, <span style="color:#e6db74">&#34;kiwi&#34;</span>, <span style="color:#e6db74">&#34;grape&#34;</span>, <span style="color:#e6db74">&#34;aaaab&#34;</span>]
+</span></span><span style="display:flex;"><span>result <span style="color:#f92672">=</span> sorted(words, key <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> word: len(set(word)))
+</span></span><span style="display:flex;"><span>print(result)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># output:</span>
+</span></span><span style="display:flex;"><span>[<span style="color:#e6db74">&#39;aaaab&#39;</span>, <span style="color:#e6db74">&#39;banana&#39;</span>, <span style="color:#e6db74">&#39;kiwi&#39;</span>, <span style="color:#e6db74">&#39;apple&#39;</span>, <span style="color:#e6db74">&#39;grape&#39;</span>]
+</span></span></code></pre></div></li>
+<li>
+<p>极简<code>Stack()</code> 数据结构的定义</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Stack</span>(list):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#// push: self.append(item) </span>
+</span></span><span style="display:flex;"><span>    push <span style="color:#f92672">=</span> list<span style="color:#f92672">.</span>append
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># // peek: self[-1]</span>
+</span></span><span style="display:flex;"><span>    peek <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> self:self[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#// isEmpty: self == []</span>
+</span></span><span style="display:flex;"><span>    isEmpty <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> self: len(self) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#75715e">#! lambda agrgs: function</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># // pop: self.remove()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># // size: len(self)</span>
+</span></span><span style="display:flex;"><span>    size <span style="color:#f92672">=</span> list<span style="color:#f92672">.</span><span style="color:#a6e22e">__len__</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    st <span style="color:#f92672">=</span> Stack()
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>push(<span style="color:#e6db74">&#39;r&#39;</span>)
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>push(<span style="color:#e6db74">&#39;h&#39;</span>)
+</span></span><span style="display:flex;"><span>    print(st<span style="color:#f92672">.</span>peek())
+</span></span><span style="display:flex;"><span>    print(st<span style="color:#f92672">.</span>isEmpty())
+</span></span><span style="display:flex;"><span>    print(st<span style="color:#f92672">.</span>pop())
+</span></span><span style="display:flex;"><span>    print(st<span style="color:#f92672">.</span>size())
+</span></span></code></pre></div></li>
+<li>
+<p><code>if __name__==&quot;__main__&quot;: </code> 用于调试代码</p>
+<p>这个代码段可以放置在<code>class</code> 或者<code>def function(x)</code> 中，方便后续的调试和函数的调用。</p>
+</li>
+<li>
+<p>基于<code>list</code> 的栈结构声明</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Stack</span>(list):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self):
+</span></span><span style="display:flex;"><span>        super()<span style="color:#f92672">.</span><span style="color:#a6e22e">__init__</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">push</span>(self,item):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>append(item)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">pop</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> super()<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">peek</span>(self): 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">size</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> len(self)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        l <span style="color:#f92672">=</span> len(self) <span style="color:#f92672">*</span> <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;|&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-&#34;</span><span style="color:#f92672">*</span>l <span style="color:#f92672">+</span><span style="color:#e6db74">&#34;)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">|&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> a <span style="color:#f92672">in</span> self:
+</span></span><span style="display:flex;"><span>            s <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;| </span><span style="color:#e6db74">%-5s</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">%</span> a 
+</span></span><span style="display:flex;"><span>        s <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">|&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-&#34;</span><span style="color:#f92672">*</span>l <span style="color:#f92672">+</span><span style="color:#e6db74">&#34;)&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> s 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">__str__</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">__repr__</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    st <span style="color:#f92672">=</span> Stack() 
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>push(<span style="color:#e6db74">&#34;R&#34;</span>)
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>push(<span style="color:#e6db74">&#34;win&#34;</span>)
+</span></span><span style="display:flex;"><span>    print(st)
+</span></span><span style="display:flex;"><span>    st<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>    print(st<span style="color:#f92672">.</span>peek())   
+</span></span></code></pre></div></li>
+<li>
+<p>spyder 编辑器和 vs code 编辑器的混合使用
+c采用spyder可以直接利用里面的interactive 进行代码的尝试， vs code 用于系统性的编辑</p>
+</li>
+<li>
+<p>对象的表示和打印</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a6e22e">__repr__</span>
+</span></span><span style="display:flex;"><span> print 用于调试
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">__str__</span> 
+</span></span><span style="display:flex;"><span>print 给出终端用户
+</span></span></code></pre></div><p>10 queue 队列</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Queue</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>items <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">isEmpty</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>items <span style="color:#f92672">==</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">enqueue</span>(self, item): <span style="color:#75715e"># 在list的首， 也就是 队列的队尾添加 </span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>itmes<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>, item)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dequeue</span>(self, item): <span style="color:#75715e"># 在list的尾， 也就是 队列的队尾添加</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>items<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">size</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> len(self<span style="color:#f92672">.</span>items)
+</span></span></code></pre></div><p>11 当调节大程序时， vs code 的快捷键 - 管理代码块</p>
+<p><code>ctrl+ K + 0</code> fold all blocks</p>
+<p><code>ctrl+ K + J</code> unfold all blocks</p>
+<p><code>ctrl + k + [</code> fold the current block</p>
+<p><code>ctrl + k + ]</code> unfold the current block</p>
+</li>
+</ol>
+
+</article>
+
+
+
+</html>

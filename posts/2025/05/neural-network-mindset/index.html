@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Neural Network Mindset | Frank YD Site</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.147.8">
+<meta name="description" content="my blog">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://frankyudang.github.io/css/index.css">
+<link rel="canonical" href="https://frankyudang.github.io/posts/2025/05/neural-network-mindset/">
+<link rel="alternate" type="application/rss+xml" href="" title="Frank YD Site">
+
+<header>
+  
+    <a href="https://frankyudang.github.io/" class="title">Frank YD Site</a>
+  
+  
+    <nav>
+    
+      <a href="/about/">About</a>
+    
+    </nav>
+  
+</header>
+
+<article>
+  <header>
+    <h1>Neural Network Mindset</h1>
+    <time datetime="2025-05-28T08:10:57&#43;08:00">May 28, 2025</time>
+  </header>
+  <h2 id="building-the-parts-of-our-algorithm">Building the parts of our algorithm</h2>
+<p>The main steps for building a Neural Network are:</p>
+<ol>
+<li>Define the model structure (such as number of input features)</li>
+<li>Initialize the model&rsquo;s parameters</li>
+<li>Loop:
+<ul>
+<li>Calculate current loss (forward propagation)</li>
+<li>Calculate current gradient (backward propagation)</li>
+<li>Update parameters (gradient descent)</li>
+</ul>
+</li>
+</ol>
+<p>You often build 1-3 separately and integrate them into one function we call <code>model()</code>.</p>
+<h2 id="key-parts-of-nn">Key parts of NN</h2>
+<p>You&rsquo;ve implemented several functions that:</p>
+<ul>
+<li>Initialize (w,b)</li>
+<li>Optimize the loss iteratively to learn parameters (w,b):
+<ul>
+<li>Computing the cost and its gradient</li>
+<li>Updating the parameters using gradient descent</li>
+</ul>
+</li>
+<li>Use the learned (w,b) to predict the labels for a given set of examples</li>
+</ul>
+<h2 id="what-to-remember">What to remember:</h2>
+<ol>
+<li>Preprocessing the dataset is important.</li>
+<li>You implemented each function separately: initialize(), propagate(), optimize(). Then you built a model().</li>
+<li>Tuning the learning rate (which is an example of a &ldquo;hyperparameter&rdquo;) can make a big difference to the algorithm.</li>
+</ol>
+
+</article>
+
+
+
+</html>

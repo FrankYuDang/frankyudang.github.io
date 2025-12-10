@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>From Book Air to Mac Studio | Frank YD Site</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.147.8">
+<meta name="description" content="my blog">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://frankyudang.github.io/css/index.css">
+<link rel="canonical" href="https://frankyudang.github.io/posts/2025/08/from-book-air-to-mac-studio/">
+<link rel="alternate" type="application/rss+xml" href="" title="Frank YD Site">
+
+<header>
+  
+    <a href="https://frankyudang.github.io/" class="title">Frank YD Site</a>
+  
+  
+    <nav>
+    
+      <a href="/about/">About</a>
+    
+    </nav>
+  
+</header>
+
+<article>
+  <header>
+    <h1>From Book Air to Mac Studio</h1>
+    <time datetime="2025-09-01T20:01:53&#43;08:00">September 01, 2025</time>
+  </header>
+  <h2 id="为什么购置mac-studio">为什么购置Mac Studio?</h2>
+<ol>
+<li>用于AI工具的使用；a. 提升大模型/机器学习代码的运行速度。 b. 体验AI工具。c. AI赋能的生活和工作</li>
+<li>体验Mac 生态系统；a. 现在构成 iphone, ipad, ipod, book air, mac studio 之间可以形成丝滑切换；b 移动办公book air, 个人服务器 mac studio. c. 一些mac 自带的实用小软件，例如 note, stikies等；d. 稳定的ssh链接。</li>
+</ol>
+<h2 id="如何上手mac-studio">如何上手Mac studio?</h2>
+<ol>
+<li>从terminal入手，参考lixiaolai&rsquo;s computer literacy <a href="https://github.com/xiaolai/apple-computer-literacy/blob/main/start-from-terminal.md">这个教程</a> 。可以了解到 homebrew等常用工具。</li>
+<li>使用ClashX进行科学上网，订阅适合的代理的账号。</li>
+<li>关于网络，连上了5G，通过fast.com 测速稳定在60M左右。</li>
+<li>连接github或通过terminal的homebrew 安装文件的时候需要以下命令对端口进行重新设置
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export https_proxy<span style="color:#f92672">=</span>http://127.0.0.1:7890
+</span></span><span style="display:flex;"><span>export http_proxy<span style="color:#f92672">=</span>http://127.0.0.1:7890 
+</span></span></code></pre></div></li>
+<li>关于icloud, 我的book air 上已经开启了备份电脑上的文稿和桌面。我在mac studio 的icloud drive 上可以查看/编辑轻量的文档。</li>
+<li>关于两个电脑的互相连接，通常会考虑在同一个局域网，或不在同一个局域网。但其实可以直接用tailscale 进行设置。在book air 与 mac studio上都安装上tailscale。只需注册并登录统一账号，软件会为两个电脑分配ip, 例如，100.xx.xxx.xx；通过该账号可以经由 terminal或屏幕共享进行连接。如果确定只在同一个局域网的话，可以用ssh 经terminal或屏幕共享-mac自带的软件-进行连接。</li>
+<li>vs code的跨电脑连接，主要利用Remote-SSH进行实现。可以在点击vs code 界面右下角的大于号小于号的叠加图标，进入‘connect to host’.初次连接需要编辑config，里面的hostname 可以设置为tailscale里给的IP。</li>
+</ol>
+<h2 id="未完待续">未完待续</h2>
+<ol>
+<li>lm studio和ollama 的使用。目前依据mac studio的配置（M4 Max, 16 core CPU, 40 core GPU，16 core NPU）, 打算中文大模型 qwen3-8b, 英文大模型 gemma-3-12b. 通过lm studio 进行操作。</li>
+<li></li>
+</ol>
+
+</article>
+
+
+
+</html>

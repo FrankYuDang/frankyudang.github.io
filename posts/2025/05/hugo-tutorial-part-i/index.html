@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Build a blog using Hugo and Github in 10 min | Frank YD Site</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.147.8">
+<meta name="description" content="my blog">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://frankyudang.github.io/css/index.css">
+<link rel="canonical" href="https://frankyudang.github.io/posts/2025/05/hugo-tutorial-part-i/">
+<link rel="alternate" type="application/rss+xml" href="" title="Frank YD Site">
+
+<header>
+  
+    <a href="https://frankyudang.github.io/" class="title">Frank YD Site</a>
+  
+  
+    <nav>
+    
+      <a href="/about/">About</a>
+    
+    </nav>
+  
+</header>
+
+<article>
+  <header>
+    <h1>Build a blog using Hugo and Github in 10 min</h1>
+    <time datetime="2025-05-05T22:53:42&#43;08:00">May 05, 2025</time>
+  </header>
+  <p>I follow this straightforward <a href="https://www.youtube.com/watch?v=LIFvgrRxdt4">youtube video</a> by Ryan Schachte to build my blog. Below is a summar of the procedure and som caveats. I developed on Windows system.</p>
+<h1 id="steps-to-build-a-blog">Steps to build a blog</h1>
+<p><strong>step  0:</strong> run the Windows PowerShell as administration, and conduct and check the installment of Git, Go and SaSS. There three softwares are prerequisits for the following steps. Notice:  follow each webpage to install these gadgets, and the internet connetion may be bad, slow the process. I stuck at <code>fetching the Dart denpendancies ...</code> . Then I change the wifi to my phone hotspot. After that it works.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; sass --version
+</span></span><span style="display:flex;"><span>1.87.0
+</span></span><span style="display:flex;"><span>PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; git --version
+</span></span><span style="display:flex;"><span>git version 2.46.0.windows.1
+</span></span><span style="display:flex;"><span>PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; go version
+</span></span><span style="display:flex;"><span>go version go1.24.2 windows/amd64
+</span></span></code></pre></div><p><strong>step 1</strong>    install <a href="https://gohugo.io/installation/windows/">Hugo on windows</a>.  there are two small steps, which are   <code>prebuilt binaries</code> and <code>package managers</code>  .</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; choco install hugo-extended
+</span></span><span style="display:flex;"><span>PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt; hugo version
+</span></span><span style="display:flex;"><span>hugo v0.147.1-95666fc5a4fd2d87528a1a69d562e0538a97062a+extended windows/amd64 BuildDate<span style="color:#f92672">=</span>2025-05-01T13:50:04Z VendorInfo<span style="color:#f92672">=</span>gohugoio 
+</span></span></code></pre></div><p><strong>step 2:</strong> Create 2 repos, one is named <code>blog</code> and the other one is named <code>yourusername.github.io</code>. The latter one naming method is requried by the github, which will automatically treat this repo differently. In my case, the latter one is named after <code>frankyudang.github.io</code></p>
+<blockquote>
+<p><code>blog</code> repo is for storing the code</p></blockquote>
+<blockquote>
+<p><code>frankyudang.github.io</code> for production repo where we deploy the form.</p></blockquote>
+<p>The above two repo is simplly created without any further actions.</p>
+<p><strong>step 3</strong> Choose the theme - we choose <code>contrast-hugo</code>, which you will fint it <a href="https://github.com/niklasbuschmann/contrast-hugo">here</a></p>
+<p><strong>step 4</strong> Clone the <code>blog</code> repo locally. Notice: (1) you have to know the basics of <code>git</code>. (2) the fold strucutre should be like below.</p>
+<pre tabindex="0"><code>cd C:\Document\Blog&gt; 
+git clone https://github.com/FrankYuDang/blog.git
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Blog
+</span></span><span style="display:flex;"><span>├── blog
+</span></span></code></pre></div><p><strong>step 5:</strong>  move into the <code>blog</code> folder to use <code>hugo</code> creating new site, and then the folder structure is like below</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hugo new site frankyudang
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Blog
+</span></span><span style="display:flex;"><span>├── blog
+</span></span><span style="display:flex;"><span>  ├── frankyudang
+</span></span><span style="display:flex;"><span>    ├── archetypes/
+</span></span><span style="display:flex;"><span>    ├── assets/
+</span></span><span style="display:flex;"><span>    ├── data/
+</span></span><span style="display:flex;"><span>    ├── i18n/
+</span></span><span style="display:flex;"><span>    ├── layouts/
+</span></span><span style="display:flex;"><span>    ├── static/
+</span></span><span style="display:flex;"><span>    ├── themes/
+</span></span><span style="display:flex;"><span>    ├── .hugo_build.lock
+</span></span><span style="display:flex;"><span>    └── hugo.toml
+</span></span></code></pre></div><p>step 6: move into the <code>\blog\frankyudang\themes\</code> folder and clone the desired theme into this folder</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>git clone https://github.com/niklasbuschmann/contrast-hugo.git
+</span></span></code></pre></div><p>step 7: in order to use this theme, set this theme as default. We should edit the file <code>\blog\frankyudang\hugo.toml</code> as below. we modeifed the <code>baseURL</code> and add the <code>theme</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>baseURL <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://frankyudang.github.io/&#39;</span>
+</span></span><span style="display:flex;"><span>languageCode <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;en-us&#39;</span>
+</span></span><span style="display:flex;"><span>title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Frank-YD Site&#39;</span>
+</span></span><span style="display:flex;"><span>theme<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;contrast-hugo&#34;</span>
+</span></span></code></pre></div><p>step 8: go back to the <code>\blog\frankyudang</code> to run the code</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hugo server
+</span></span></code></pre></div><p>and gives  you a link http://localhost:1313/</p>
+<p><strong>step 9</strong>： <strong>create a new post</strong>. <code>POSTNAME</code> could be replaced with your prefered name. And this will create a folder <code>contents\post\</code> where it stores the <code>POSTNAME.md</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>hugo new posts/POSTNAME.md
+</span></span></code></pre></div><p>And now you can edit this <code>POSTNAME.md</code> using editors. (I  use vs code)</p>
+<p><strong>step 10</strong> add our other <code>blog (frankyudang.github.io)</code> as a <code>submodule</code>. This allows us to store the static assets that were generated in a seperate repo. It is a good way to organize your code. This will create the folder strcuture as below.</p>
+<p>Notice: make sure <code>main</code> branch is located in the repo. otherwise you need to create one.</p>
+<pre tabindex="0"><code class="language-[pwershell" data-lang="[pwershell">cd .. # back to the Blog\
+git clone https://github.com/FrankYuDang/frankyudang.github.io.git 
+cd (
+git chceckout -b main (not necessary)
+touch README.md # creae a new,empty file. I did it manually
+
+git add .
+git commit -m &#34;adding readme&#34;
+git push origin main
+</code></pre><pre tabindex="0"><code>Blog
+├── blog
+  ├── frankyudang
+    ├── archetypes/
+        ···
+        ···
+    └── hugo.toml
+├── frankyudang.github.io
+</code></pre><p><strong>setp 11</strong> （IMPORTANT） we deploy a submodule into the <code>public</code> folder.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>cd \Blog\blog\frankyudang\
+</span></span><span style="display:flex;"><span>git submodule add -b main https<span style="color:#960050;background-color:#1e0010">:</span>//github.com/FrankYuDang/frankyudang.github.io.git public 
+</span></span><span style="display:flex;"><span>cd public\
+</span></span></code></pre></div><p>After above commands, you will find <code>README.md</code> in <code>public\</code>folder.</p>
+<p>Below is where <strong>magic</strong> happens. The command <code>hugo -t contrast-hugo</code> in the <code>\Blog\blog\frankyudang\</code> foldergenerates static file into the <code>\public</code>folder.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd .. <span style="color:#75715e"># come back the \Blog\blog\frankyudang\ folder</span>
+</span></span><span style="display:flex;"><span>hugo -t contrast-hugo <span style="color:#75715e"># generate static file</span>
+</span></span><span style="display:flex;"><span>cd public/ <span style="color:#75715e"># heading to the folder to check out</span>
+</span></span></code></pre></div><p>Notice: After <code>hugo -t contrast-hugo</code> , the generated files will be in the <code>\public</code> folder</p>
+<p><strong>step 12</strong> (IMPORTANT) what the below commands are doing is to push the gerenerated static assets into our static assets repository.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd public
+</span></span><span style="display:flex;"><span>git remote -v <span style="color:#75715e"># it will give you the repo link</span>
+</span></span><span style="display:flex;"><span>git add . 
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;init commit&#34;</span> 
+</span></span><span style="display:flex;"><span>git push origin main 
+</span></span></code></pre></div><p><strong>step 13</strong> Almost done. Please go to the github repo website and you can see the update (Amazing!). And then check out the <code>\setting\pages</code> to view your site. It will take serval minutes to show as you design.</p>
+<p>step 14. Done! now you can enjoy your artwork.</p>
+<p>In summary. above is the procedure you will follow at the first time to build blog. Below is a summary of the key steps that you can repeat to add your own next post.</p>
+<h1 id="deploy-your-next-post-updated">Deploy your next post (updated)</h1>
+<p>updated:</p>
+<p>2025-05-13- add the method to create a folder, which allows the addition of figures.</p>
+<p>step 1： <code>cd blog/frankyudang</code></p>
+<p>step 2: <code>hugo new posts/POSTNAME.md</code>  and edit your file. If you would like the post containing figures, use this command <code>hugo new posts/MY-FOLDER-NAME/index.md</code>. Notice you can replace the <code>MY-FOLDER-NAME</code> with the one you like, and the <code>index.md</code> is fixed which will be used to manage related figures.</p>
+<p>step 3: Edit  <code>index.md</code> and add the figures in the folder.</p>
+<p>step 4: generate the static file  <code>hugo -t contrast-hugo</code></p>
+<p>step 5: <code>cd public</code>  and <code>git remote -v</code>, and then add the changes.</p>
+<p>step 6:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git add .
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;MEANINGFUL COMMIt&#34;</span> <span style="color:#75715e"># replace your true commit</span>
+</span></span><span style="display:flex;"><span>git push origin main
+</span></span></code></pre></div><p>step 6: deploy the updated scripts into the url. (it took a while to update the page)</p>
+<p>Now we add the this new line to update - repeat step 2 - step 6</p>
+
+</article>
+
+
+
+</html>

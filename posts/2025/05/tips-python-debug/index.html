@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Tips Python Debug | Frank YD Site</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.147.8">
+<meta name="description" content="my blog">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://frankyudang.github.io/css/index.css">
+<link rel="canonical" href="https://frankyudang.github.io/posts/2025/05/tips-python-debug/">
+<link rel="alternate" type="application/rss+xml" href="" title="Frank YD Site">
+
+<header>
+  
+    <a href="https://frankyudang.github.io/" class="title">Frank YD Site</a>
+  
+  
+    <nav>
+    
+      <a href="/about/">About</a>
+    
+    </nav>
+  
+</header>
+
+<article>
+  <header>
+    <h1>Tips Python Debug</h1>
+    <time datetime="2025-05-08T06:34:28&#43;08:00">May 08, 2025</time>
+  </header>
+  <h1 id="一键调试">一键调试</h1>
+<p>In vs code,</p>
+<p>·<code>F9</code>：add the breakpoint and edit the break point by inserting  <code>expression</code> or <code>hit count</code>.</p>
+<p><code>F5</code> 或者 <code>debug with python </code>,启动调试器，显示调试类型列表</p>
+<p><code>F10</code> is to run the code to next line</p>
+<p><code>调试视图</code>查看代码相关的信息变量</p>
+<p><code>debug console</code> 对变量和表达式进行运算</p>
+<h1 id="创建调试">创建调试</h1>
+<p>在<code>调试视图</code>,单击 <code>create a launch.json file</code>, 选择 <code>python file</code> 选项</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#e6db74">&#34;name&#34;</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Python: Current File&#34;</span> <span style="color:#75715e"># 调试配置的名字</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;program&#34;</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;{$file}&#34;</span> <span style="color:#75715e"># 当前活跃文件</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;cwd&#34;</span> <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">$</span>{workspaceFolder} <span style="color:#75715e"># 指定调试器的工作目录，打开文件夹的完整路径</span>
+</span></span></code></pre></div>
+</article>
+
+
+
+</html>

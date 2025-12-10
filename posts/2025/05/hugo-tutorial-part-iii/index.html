@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<title>Manage figure with Hugo -Part III | Frank YD Site</title>
+<meta charset="utf-8">
+<meta name="generator" content="Hugo 0.147.8">
+<meta name="description" content="my blog">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://frankyudang.github.io/css/index.css">
+<link rel="canonical" href="https://frankyudang.github.io/posts/2025/05/hugo-tutorial-part-iii/">
+<link rel="alternate" type="application/rss+xml" href="" title="Frank YD Site">
+
+<header>
+  
+    <a href="https://frankyudang.github.io/" class="title">Frank YD Site</a>
+  
+  
+    <nav>
+    
+      <a href="/about/">About</a>
+    
+    </nav>
+  
+</header>
+
+<article>
+  <header>
+    <h1>Manage figure with Hugo -Part III</h1>
+    <time datetime="2025-05-11T08:41:41&#43;08:00">May 11, 2025</time>
+  </header>
+  <p>hello, in this post demonstrating how to manage image. There are two ways to store and reference images in HUgo</p>
+<ol>
+<li>global figure, stored in the <code>/static/image/</code>folder</li>
+<li>local figure, stored in the same folder as <code>/posts/xxx-post/xxx.md</code></li>
+</ol>
+<h1 id="global-figure">Global figure</h1>
+<p>The folder strutcutre is like this:</p>
+<pre tabindex="0"><code>your-hugo-site/
+├── archetypes/
+├── content/
+├── data/
+├── layouts/
+├── static/
+│   └── images/  &lt;-- 在这里存放图片
+│       ├── logo.png
+│       └── my-global-image.jpg
+├── themes/
+│   └── contrast-hugo/
+└── hugo.toml (或 config.toml)
+</code></pre><p>The command syntax is below：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>!<span style="color:#f92672">[</span>这是图片的描述文字<span style="color:#f92672">](</span>/images/my-global-image.jpg<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>&lt;img src<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/images/my-global-image.jpg&#34;</span> alt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;这是图片的描述文字&#34;</span>&gt;
+</span></span></code></pre></div><p><img src="flower.jpg" alt="flower"></p>
+<h1 id="local-figure-page-bundles">Local figure (page bundles)</h1>
+<p>The folder structure is below</p>
+<pre tabindex="0"><code>your-hugo-site/
+├── content/
+│   └── posts/
+│       ├── my-first-post/  &lt;-- 这是一个 Page Bundle
+│       │   ├── index.md         &lt;-- 文章内容
+│       │   └── featured-image.jpg &lt;-- 文章专属图片
+│       │   └── another-image.png
+│       └── my-second-post.md  &lt;-- 这是一个独立的 Markdown 文件 (不是 Page Bundle)
+├── static/
+└── ... 
+</code></pre><p><strong>The reference method</strong></p>
+<p>One is Markdown syntax</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>!<span style="color:#f92672">[</span>文章的特色图片<span style="color:#f92672">](</span>featured-image.jpg<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>!<span style="color:#f92672">[</span>另一张图片<span style="color:#f92672">](</span>another-image.png<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>The other one is Hugo html</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>beautiful flower** &lt; figure src<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;featured-image.jpg&#34;</span> title<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;beautiful flower&#34;</span> &gt;** <span style="color:#75715e"># replace ** with {{}}</span>
+</span></span></code></pre></div><figure><img src="/posts/2025/05/hugo-tutorial-part-iii/flower.jpg"><figcaption>
+      <h4>beautiful flower</h4>
+    </figcaption>
+</figure>
+
+
+</article>
+
+
+
+</html>
